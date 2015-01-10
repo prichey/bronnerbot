@@ -23,7 +23,7 @@ class MyBot < Ebooks::Bot
 
   def on_startup
     scheduler.every '1h' do
-      model = Ebooks::Model.load("model/rant.model")
+      model = Ebooks::Model.load("model/rose.model")
       tweet(model.make_statement(140))
     end
   end
@@ -42,7 +42,7 @@ class MyBot < Ebooks::Bot
     # Reply to a mention
     # this_long = 140 - tweet.text.length
     # if this_long > 0 then
-    model = Ebooks::Model.load("model/rant.model")
+    model = Ebooks::Model.load("model/rose.model")
     tweeter = meta(tweet).reply_prefix
     reply_content = meta(tweet).mentionless
     response = model.make_response(reply_content, 140 - tweeter.length + 2)
