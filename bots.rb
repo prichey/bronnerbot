@@ -29,12 +29,14 @@ class MyBot < Ebooks::Bot
 
     scheduler.every '12h' do
       model = Ebooks::Model.load("model/label.model")
+
       bot.twitter.search("Dr. Bronner's", result_type: "recent").take(10).each do |tweet|
         tweeter = meta(tweet).reply_prefix
         reply_content = meta(tweet).mentionless
         response = model.make_response(reply_content, 140 - tweeter.length + 2)
         reply(tweet, tweeter + response)
       end
+
     end
   end
 
@@ -50,9 +52,18 @@ class MyBot < Ebooks::Bot
 
   def on_mention(tweet)
     model = Ebooks::Model.load("model/label.model")
+
+    top100 = model.keywords.take(100)
+    tokens = Ebooks::NLP.tokenize(tweet[:text])
+
+    if tokens.find { |t| top100.include?(t) }
+      bot.favorite(tweet[:id])
+    end
+
     tweeter = meta(tweet).reply_prefix
     reply_content = meta(tweet).mentionless
     response = model.make_response(reply_content, 140 - tweeter.length + 2)
+
     reply(tweet, tweeter + response)
   end
 
