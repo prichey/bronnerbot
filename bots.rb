@@ -15,7 +15,7 @@ class MyBot < Ebooks::Bot
     self.consumer_secret = CONSUMER_SECRET
 
     # Users to block instead of interacting with
-    self.blacklist = ['tnietzschequote']
+    self.blacklist = ['DrBronner']
 
     # Range in seconds to randomize delay when bot.delay is called
     self.delay_range = 1..6
@@ -25,6 +25,15 @@ class MyBot < Ebooks::Bot
     scheduler.every '1h' do
       model = Ebooks::Model.load("model/label.model")
       tweet(model.make_statement(140))
+    end
+
+    scheduler.every '12h' do
+      bot.twitter.search("Dr. Bronner's", result_type: "recent").take(10).each do |tweet|
+        tweeter = meta(tweet).reply_prefix
+        reply_content = meta(tweet).mentionless
+        response = model.make_response(reply_content, 140 - tweeter.length + 2)
+        reply(tweet, tweeter + response)
+      end
     end
   end
 
