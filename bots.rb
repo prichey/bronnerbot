@@ -54,10 +54,11 @@ class MyBot < Ebooks::Bot
     model = Ebooks::Model.load("model/label.model")
 
     top100 = model.keywords.take(100)
-    tokens = Ebooks::NLP.tokenize(tweet[:text])
+    tokens = Ebooks::NLP.tokenize(tweet.text)
+    interesting = tokens.find { |t| top100.include?(t.downcase) }
 
-    if tokens.find { |t| top100.include?(t) }
-      bot.favorite(tweet[:id])
+    if interesting
+      favorite(tweet)
     end
 
     tweeter = meta(tweet).reply_prefix
