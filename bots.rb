@@ -22,7 +22,7 @@ class MyBot < Ebooks::Bot
   end
 
   def on_startup
-    scheduler.cron '0 * * * *' do
+    scheduler.cron '0 0,3,6,9,12,15,18,21 * * *' do
       model = Ebooks::Model.load("model/label.model")
       tweet(model.make_statement(140))
     end
@@ -54,7 +54,7 @@ class MyBot < Ebooks::Bot
     model = Ebooks::Model.load("model/label.model")
 
     top100 = model.keywords.take(100)
-    tokens = Ebooks::NLP.tokenize(tweet.text)
+    tokens = Ebooks::NLP.tokenize(tweet[:text])
     interesting = tokens.find { |t| top100.include?(t.downcase) }
 
     if interesting
