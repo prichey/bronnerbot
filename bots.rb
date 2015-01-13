@@ -28,6 +28,7 @@ class MyBot < Ebooks::Bot
     end
 
     scheduler.every '12h' do
+      model = Ebooks::Model.load("model/label.model")
       bot.twitter.search("Dr. Bronner's", result_type: "recent").take(10).each do |tweet|
         tweeter = meta(tweet).reply_prefix
         reply_content = meta(tweet).mentionless
