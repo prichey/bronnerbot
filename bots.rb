@@ -22,12 +22,12 @@ class MyBot < Ebooks::Bot
   end
 
   def on_startup
-    scheduler.every '1h' do
+    scheduler.cron '0 * * * *' do
       model = Ebooks::Model.load("model/label.model")
       tweet(model.make_statement(140))
     end
 
-    scheduler.every '12h' do
+    scheduler.cron '0 0,12 * * *' do
       model = Ebooks::Model.load("model/label.model")
 
       bot.twitter.search("Dr. Bronner's", result_type: "recent").take(10).each do |tweet|
