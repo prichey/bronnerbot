@@ -40,15 +40,15 @@ class MyBot < Ebooks::Bot
     end
   end
 
-  def on_message(dm)
-    # Reply to a DM
-    # reply(dm, "secret secrets")
-  end
+  # def on_message(dm)
+  #   # Reply to a DM
+  #   # reply(dm, "secret secrets")
+  # end
 
-  def on_follow(user)
-    # Follow a user back
-    # follow(user.screen_name)
-  end
+  # def on_follow(user)
+  #   # Follow a user back
+  #   # follow(user.screen_name)
+  # end
 
   def on_mention(tweet)
     model = Ebooks::Model.load("model/label.model")
@@ -68,13 +68,12 @@ class MyBot < Ebooks::Bot
     reply(tweet, tweeter + response)
   end
 
-  def on_timeline(tweet)
-    # Reply to a tweet in the bot's timeline
-    # reply(tweet, "nice tweet")
-  end
+  # def on_timeline(tweet)
+  #   # Reply to a tweet in the bot's timeline
+  #   # reply(tweet, "nice tweet")
+  # end
 end
 
-# Make a MyBot and attach it to an account
 MyBot.new("bronnerbot") do |bot|
   bot.access_token = OAUTH_TOKEN
   bot.access_token_secret = OAUTH_TOKEN_SECRET
