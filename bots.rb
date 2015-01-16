@@ -29,49 +29,33 @@ class MyBot < Ebooks::Bot
 
     scheduler.cron '0 0,12 * * *' do
       model = Ebooks::Model.load("model/label.model")
+      bothered = Array.new
 
-      bot.twitter.search("Dr. Bronner's", result_type: "recent").take(10).each do |tweet|
-        tweeter = meta(tweet).reply_prefix
-        reply_content = meta(tweet).mentionless
-        response = model.make_response(reply_content, 140 - tweeter.length + 2)
-        reply(tweet, tweeter + response)
+      twitter.search("Dr. Bronner's", result_type: "recent").take(5).each do |tweet|
+        delay do
+          unless bothered.include?(tweet.user.screen_name)
+            reply(tweet, model.make_response(meta(tweet).mentionless, meta(tweet).limit))
+            bothered.push(tweet.user.screen_name)
+          end
+        end
       end
-
     end
   end
-
-  # def on_message(dm)
-  #   # Reply to a DM
-  #   # reply(dm, "secret secrets")
-  # end
-
-  # def on_follow(user)
-  #   # Follow a user back
-  #   # follow(user.screen_name)
-  # end
 
   def on_mention(tweet)
     model = Ebooks::Model.load("model/label.model")
 
     top100 = model.keywords.take(100)
-    tokens = Ebooks::NLP.tokenize(tweet[:text])
+    tokens = Ebooks::NLP.tokenize(tweet.text)
     interesting = tokens.find { |t| top100.include?(t.downcase) }
 
     if interesting
       favorite(tweet)
     end
 
-    tweeter = meta(tweet).reply_prefix
-    reply_content = meta(tweet).mentionless
-    response = model.make_response(reply_content, 140 - tweeter.length + 2)
-
-    reply(tweet, tweeter + response)
+    reply(tweet, model.make_response(meta(tweet).mentionless, meta(tweet).limit))
   end
 
-  # def on_timeline(tweet)
-  #   # Reply to a tweet in the bot's timeline
-  #   # reply(tweet, "nice tweet")
-  # end
 end
 
 MyBot.new("bronnerbot") do |bot|
