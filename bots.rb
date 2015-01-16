@@ -29,6 +29,8 @@ class MyBot < Ebooks::Bot
 
     scheduler.cron '0 0,12 * * *' do
       model = Ebooks::Model.load("model/label.model")
+      top100 = model.keywords.take(100)
+
       bothered = Array.new
 
       twitter.search("Dr. Bronner's", result_type: "recent").take(5).each do |tweet|
@@ -36,6 +38,13 @@ class MyBot < Ebooks::Bot
           unless bothered.include?(tweet.user.screen_name)
             reply(tweet, model.make_response(meta(tweet).mentionless, meta(tweet).limit))
             bothered.push(tweet.user.screen_name)
+
+            tokens = Ebooks::NLP.tokenize(tweet.text)
+            interesting = tokens.find { |t| top100.include?(t.downcase) }
+
+            if interesting
+              favorite(tweet)
+            end
           end
         end
       end
