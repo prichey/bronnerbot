@@ -22,7 +22,7 @@ class MyBot < Ebooks::Bot
   end
 
   def on_startup
-    scheduler.cron '0 0,3,6,9,12,15,18,21 * * *' do
+    scheduler.cron '0 0,6,12,18 * * *' do
       model = Ebooks::Model.load("model/label.model")
       tweet(model.make_statement(140))
     end
