@@ -1,7 +1,9 @@
 require 'twitter_ebooks'
 require 'dotenv'
 
-Dotenv.load(".env")
+if File.file?(".env")
+  Dotenv.load(".env")
+end
 
 CONSUMER_KEY = ENV['EBOOKS_CONSUMER_KEY']
 CONSUMER_SECRET = ENV['EBOOKS_CONSUMER_SECRET']
